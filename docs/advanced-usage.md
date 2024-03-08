@@ -25,13 +25,14 @@ See [action.yml](../action.yml) for more details on task inputs.
 Inputs `java-version` and `distribution` are mandatory and needs to be provided. See [Supported distributions](../README.md#Supported-distributions) for a list of available options.
 
 ### Eclipse Temurin
+
 ```yaml
 steps:
 - uses: actions/checkout@v4
 - uses: actions/setup-java@v4
   with:
     distribution: 'temurin'
-    java-version: '11'
+    java-version: '21'
 - run: java -cp java HelloWorldApp
 ```
 
@@ -49,37 +50,40 @@ steps:
 ```
 
 ### Zulu
+
 ```yaml
 steps:
 - uses: actions/checkout@v4
 - uses: actions/setup-java@v4
   with:
     distribution: 'zulu'
-    java-version: '11'
+    java-version: '21'
     java-package: jdk # optional (jdk, jre, jdk+fx or jre+fx) - defaults to jdk
 - run: java -cp java HelloWorldApp
 ```
 
 ### Liberica
+
 ```yaml
 steps:
 - uses: actions/checkout@v4
 - uses: actions/setup-java@v4
   with:
     distribution: 'liberica'
-    java-version: '11'
+    java-version: '21'
     java-package: jdk # optional (jdk, jre, jdk+fx or jre+fx) - defaults to jdk
 - run: java -cp java HelloWorldApp
 ```
 
 ### Microsoft
+
 ```yaml
 steps:
 - uses: actions/checkout@v4
 - uses: actions/setup-java@v4
   with:
     distribution: 'microsoft'
-    java-version: '11'
+    java-version: '21'
 - run: java -cp java HelloWorldApp
 ```
 
@@ -94,7 +98,7 @@ uses: actions/setup-java@v4
 with:
   token: ${{ secrets.GH_DOTCOM_TOKEN }}
   distribution: 'microsoft'
-  java-version: '11'
+  java-version: '21'
 ```
 
 If the runner is not able to access github.com, any Java versions requested during a workflow run must come from the runner's tool cache. See "[Setting up the tool cache on self-hosted runners without internet access](https://docs.github.com/en/enterprise-server@3.2/admin/github-actions/managing-access-to-actions-from-githubcom/setting-up-the-tool-cache-on-self-hosted-runners-without-internet-access)" for more information.
@@ -108,7 +112,7 @@ steps:
 - uses: actions/setup-java@v4
   with:
     distribution: 'corretto'
-    java-version: '11'
+    java-version: '21'
 - run: java -cp java HelloWorldApp
 ```
 
@@ -121,12 +125,13 @@ steps:
 - uses: actions/setup-java@v4
   with:
     distribution: 'oracle'
-    java-version: '17'
+    java-version: '21'
 - run: java -cp java HelloWorldApp
 ```
 
 ### Alibaba Dragonwell
 **NOTE:** Alibaba Dragonwell only provides jdk.
+
 ```yaml
 steps:
 - uses: actions/checkout@v4
@@ -188,7 +193,7 @@ If your use-case requires a custom distribution (in the example, alpine-linux is
       - name: fetch latest temurin JDK
         id: fetch_latest_jdk
         run: |
-          major_version={{ env.JAVA_VERSION }} # Example 8 or 11 or 17
+          major_version={{ env.JAVA_VERSION }} # Example 16 or 21 or 22
           cd $RUNNER_TEMP
           response=$(curl -s "https://api.github.com/repos/adoptium/temurin${major_version}-binaries/releases")
           latest_jdk_download_url=$(echo "$response" | jq -r '.[0].assets[] | select(.name | contains("jdk_x64_alpine-linux") and endswith(".tar.gz")) | .browser_download_url')
@@ -356,6 +361,8 @@ If `gpg-private-key` input is provided, the private key will be written to a fil
 
 See the help docs on [Publishing a Package](https://help.github.com/en/github/managing-packages-with-github-packages/configuring-apache-maven-for-use-with-github-packages#publishing-a-package) for more information on the `pom.xml` file.
 
+***NOTE***: If the error that states, `gpg: Sorry, no terminal at all requested - can't get input` [is encountered](https://github.com/actions/setup-java/issues/554), please update the version of `maven-gpg-plugin` to 1.6 or higher.
+
 ## Apache Maven with a settings path
 
 When using an Actions self-hosted runner with multiple shared runners the default `$HOME` directory can be shared by a number runners at the same time which could overwrite existing settings file. Setting the `settings-path` variable allows you to choose a unique location for your settings file.
@@ -439,7 +446,7 @@ steps:
 - uses: actions/setup-java@v4
   with:
     distribution: '<distribution>'
-    java-version: 15
+    java-version: '15'
 ```
 
 The result is a Toolchain with entries for JDKs 8, 11 and 15. You can even combine this with custom JDKs of arbitrary versions:
@@ -456,7 +463,7 @@ The result is a Toolchain with entries for JDKs 8, 11 and 15. You can even combi
     architecture: x64
 ```
 
-This will generate a Toolchains entry with the following values: `version: 1.6`, `vendor: jkdfile`, `id: Oracle_1.6`.
+This will generate a Toolchains entry with the following values: `version: 1.6`, `vendor: jdkfile`, `id: Oracle_1.6`.
 
 ### Modifying The Toolchain Vendor For JDKs
 Each JDK provider will receive a default `vendor` using the `distribution` input value but this can be overridden with the `mvn-toolchain-vendor` parameter as follows.
@@ -523,7 +530,7 @@ If the `java-version-file` input is specified, the action will try to extract th
 Action is able to recognize all variants of the version description according to [jenv](https://github.com/jenv/jenv). 
 Valid entry options:
 ```
-major versions: 8, 11, 16, 17
+major versions: 8, 11, 16, 17, 21
 more specific versions: 1.8.0.2, 17.0, 11.0, 11.0.4, 8.0.232, 8.0.282+8
 early access (EA) versions: 15-ea, 15.0.0-ea, 15.0.0-ea.2, 15.0.0+2-ea
 versions with specified distribution: openjdk64-11.0.2
